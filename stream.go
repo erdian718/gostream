@@ -112,6 +112,15 @@ func (self *Stream) Walk(f func(interface{})) *Stream {
 	return self
 }
 
+// 强制求值
+func (self *Stream) Force() *Stream {
+	if self == nil {
+		return nil
+	}
+	self.Tail().Force()
+	return self
+}
+
 // 折叠
 func (self *Stream) Fold(x interface{}, f func(interface{}, interface{}) interface{}) interface{} {
 	if self == nil {
