@@ -34,13 +34,6 @@ func (self *Stream) Tail() *Stream {
 	return self.cache
 }
 
-// 将元素加到流的头部
-func (self *Stream) Cons(x interface{}) *Stream {
-	return New(x, func() *Stream {
-		return self
-	})
-}
-
 // 取前n个元素
 func (self *Stream) Take(n int) *Stream {
 	if self == nil || n <= 0 {

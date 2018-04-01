@@ -15,6 +15,19 @@ func Make(xs ...interface{}) *Stream {
 	})
 }
 
+// 连接流
+func Concat(s *Stream, ss ...*Stream) *Stream {
+	if len(ss) == 0 {
+		return s
+	}
+	if s == nil {
+		return Concat(ss[0], ss[1:]...)
+	}
+	return New(s.Head(), func() *Stream {
+		return Concat(s.Tail(), ss...)
+	})
+}
+
 // 重复
 func Repeat(x interface{}) *Stream {
 	return New(x, func() *Stream {
