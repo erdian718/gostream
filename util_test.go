@@ -15,6 +15,9 @@ func TestMake(t *testing.T) {
 		}
 		s = s.Tail()
 	}
+	if s != nil {
+		t.Fail()
+	}
 }
 
 func TestConcat(t *testing.T) {
@@ -27,6 +30,9 @@ func TestConcat(t *testing.T) {
 			t.Fail()
 		}
 		s = s.Tail()
+	}
+	if s != nil {
+		t.Fail()
 	}
 }
 
@@ -49,6 +55,9 @@ func TestGrow(t *testing.T) {
 		s = s.Tail()
 		k += 2
 	}
+	if s != nil {
+		t.Fail()
+	}
 }
 
 func TestN(t *testing.T) {
@@ -58,6 +67,9 @@ func TestN(t *testing.T) {
 			t.Fail()
 		}
 		s = s.Tail()
+	}
+	if s != nil {
+		t.Fail()
 	}
 }
 
@@ -69,6 +81,9 @@ func TestRange(t *testing.T) {
 		}
 		s = s.Tail()
 	}
+	if s != nil {
+		t.Fail()
+	}
 
 	s = stream.Range(3, -3)
 	for i := 3; i > -3; i-- {
@@ -76,6 +91,9 @@ func TestRange(t *testing.T) {
 			t.Fail()
 		}
 		s = s.Tail()
+	}
+	if s != nil {
+		t.Fail()
 	}
 }
 
