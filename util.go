@@ -48,11 +48,11 @@ func N() *Stream {
 }
 
 // 范围
-func Range(x int, y int) *Stream {
-	if x < y {
-		return Grow(x, 1).Take(y - x)
+func Range(a int, b int) *Stream {
+	if a < b {
+		return Grow(a, 1).Take(b - a)
 	} else {
-		return Grow(x, -1).Take(x - y)
+		return Grow(a, -1).Take(a - b)
 	}
 }
 

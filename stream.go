@@ -58,38 +58,30 @@ func (self *Stream) TakeWhile(f func(interface{}) bool) *Stream {
 
 // 丢弃前n个元素
 func (self *Stream) Drop(n int) *Stream {
-	if self == nil || n <= 0 {
-		return self
+	s := self
+	for i := 0; i < n && s != nil; i++ {
+		s = s.Tail()
 	}
-	return self.Tail().Drop(n - 1)
+	return s
 }
 
 // 丢弃前面的元素
 func (self *Stream) DropWhile(f func(interface{}) bool) *Stream {
-	if self == nil {
-		return nil
+	s := self
+	for s != nil {
+		if h := s.Head(); f(h) {
+			s = s.Tail()
+		} else {
+			break
+		}
 	}
-	if h := self.Head(); f(h) {
-		return self.Tail().DropWhile(f)
-	} else {
-		return self
-	}
+	return s
 }
 
 // 去掉尾部n个元素
 func (self *Stream) Cut(n int) *Stream {
 	if n <= 0 {
 		return self
-	}
-
-	var cut func(*Stream, *Stream, int) *Stream
-	cut = func(xs, ys *Stream, n int) *Stream {
-		if ys == nil {
-			return nil
-		}
-		return New(xs.Head(), func() *Stream {
-			return cut(xs.Tail(), ys.Tail(), n)
-		})
 	}
 	return cut(self, self.Drop(n), n)
 }
@@ -120,51 +112,52 @@ func (self *Stream) Filter(f func(interface{}) bool) *Stream {
 
 // 遍历
 func (self *Stream) Walk(f func(interface{})) *Stream {
-	if self == nil {
-		return nil
+	for s := self; s != nil; s = s.Tail() {
+		f(s.Head())
 	}
-	f(self.Head())
-	self.Tail().Walk(f)
 	return self
 }
 
 // 强制求值
 func (self *Stream) Force() *Stream {
-	if self == nil {
-		return nil
+	for s := self; s != nil; s = s.Tail() {
 	}
-	self.Tail().Force()
 	return self
 }
 
 // 折叠
-func (self *Stream) Fold(x interface{}, f func(interface{}, interface{}) interface{}) interface{} {
-	if self == nil {
-		return x
+func (self *Stream) Fold(a interface{}, f func(interface{}, interface{}) interface{}) interface{} {
+	for s := self; s != nil; s = s.Tail() {
+		a = f(a, s.Head())
 	}
-	return self.Tail().Fold(f(x, self.Head()), f)
+	return a
 }
 
 // 所有元素满足条件
 func (self *Stream) All(f func(interface{}) bool) bool {
-	if self == nil {
-		return true
+	for s := self; s != nil; s = s.Tail() {
+		if !f(s.Head()) {
+			return false
+		}
 	}
-	if h := self.Head(); f(h) {
-		return self.Tail().All(f)
-	} else {
-		return false
-	}
+	return true
 }
 
 // 任意一个元素满足条件
 func (self *Stream) Any(f func(interface{}) bool) bool {
-	if self == nil {
-		return false
+	for s := self; s != nil; s = s.Tail() {
+		if f(s.Head()) {
+			return true
+		}
 	}
-	if h := self.Head(); f(h) {
-		return true
-	} else {
-		return self.Tail().Any(f)
+	return false
+}
+
+func cut(xs, ys *Stream, n int) *Stream {
+	if ys == nil {
+		return nil
 	}
+	return New(xs.Head(), func() *Stream {
+		return cut(xs.Tail(), ys.Tail(), n)
+	})
 }
