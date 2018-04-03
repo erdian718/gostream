@@ -5,7 +5,6 @@ type Stream struct {
 	head  interface{}
 	tail  func() *Stream
 	cache *Stream
-	count int
 }
 
 // 未知
@@ -17,7 +16,6 @@ func New(head interface{}, tail func() *Stream) *Stream {
 		head:  head,
 		tail:  tail,
 		cache: unknown,
-		count: -1,
 	}
 }
 
@@ -76,6 +74,24 @@ func (self *Stream) DropWhile(f func(interface{}) bool) *Stream {
 	} else {
 		return self
 	}
+}
+
+// 去掉尾部n个元素
+func (self *Stream) Cut(n int) *Stream {
+	if n <= 0 {
+		return self
+	}
+
+	var cut func(*Stream, *Stream, int) *Stream
+	cut = func(xs, ys *Stream, n int) *Stream {
+		if ys == nil {
+			return nil
+		}
+		return New(xs.Head(), func() *Stream {
+			return cut(xs.Tail(), ys.Tail(), n)
+		})
+	}
+	return cut(self, self.Drop(n), n)
 }
 
 // 映射
@@ -151,15 +167,4 @@ func (self *Stream) Any(f func(interface{}) bool) bool {
 	} else {
 		return self.Tail().Any(f)
 	}
-}
-
-// 元素个数
-func (self *Stream) Count() int {
-	if self == nil {
-		return 0
-	}
-	if self.count < 0 {
-		self.count = 1 + self.Tail().Count()
-	}
-	return self.count
 }
