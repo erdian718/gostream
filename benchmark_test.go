@@ -70,3 +70,7 @@ func BenchmarkAny(b *testing.B) {
 		return x.(int) < 0
 	})
 }
+
+func BenchmarkConcat(b *testing.B) {
+	stream.Concat(stream.N().Take(b.N), stream.Range(-b.N, 0)).Force()
+}
