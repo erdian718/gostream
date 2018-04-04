@@ -83,7 +83,7 @@ func (self *Stream) Cut(n int) *Stream {
 	if n <= 0 {
 		return self
 	}
-	return cut(self, self.Drop(n), n)
+	return cut(self, self.Drop(n))
 }
 
 // 映射
@@ -153,11 +153,11 @@ func (self *Stream) Any(f func(interface{}) bool) bool {
 	return false
 }
 
-func cut(xs, ys *Stream, n int) *Stream {
+func cut(xs, ys *Stream) *Stream {
 	if ys == nil {
 		return nil
 	}
 	return New(xs.Head(), func() *Stream {
-		return cut(xs.Tail(), ys.Tail(), n)
+		return cut(xs.Tail(), ys.Tail())
 	})
 }
