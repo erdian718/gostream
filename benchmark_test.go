@@ -71,6 +71,13 @@ func BenchmarkAny(b *testing.B) {
 	})
 }
 
+func BenchmarkCount(b *testing.B) {
+	n := stream.N().Take(b.N).Count()
+	if n != b.N {
+		b.FailNow()
+	}
+}
+
 func BenchmarkConcat(b *testing.B) {
 	stream.Concat(stream.N().Take(b.N), stream.Range(-b.N, 0)).Force()
 }

@@ -11,12 +11,12 @@ func TestMake(t *testing.T) {
 	s := stream.Make(10, 11, 12)
 	for i := 0; i < 3; i++ {
 		if s.Head() != i+10 {
-			t.Fail()
+			t.FailNow()
 		}
 		s = s.Tail()
 	}
 	if s != nil {
-		t.Fail()
+		t.FailNow()
 	}
 }
 
@@ -27,12 +27,12 @@ func TestConcat(t *testing.T) {
 	s := stream.Concat(s0, s1, s2)
 	for i := 0; i < 9; i++ {
 		if s.Head() != i {
-			t.Fail()
+			t.FailNow()
 		}
 		s = s.Tail()
 	}
 	if s != nil {
-		t.Fail()
+		t.FailNow()
 	}
 }
 
@@ -41,7 +41,7 @@ func TestRepeat(t *testing.T) {
 		return x.(int) == 6
 	})
 	if !ok {
-		t.Fail()
+		t.FailNow()
 	}
 }
 
@@ -50,13 +50,13 @@ func TestGrow(t *testing.T) {
 	k := -5
 	for i := 0; i < 10; i++ {
 		if s.Head() != k {
-			t.Fail()
+			t.FailNow()
 		}
 		s = s.Tail()
 		k += 2
 	}
 	if s != nil {
-		t.Fail()
+		t.FailNow()
 	}
 }
 
@@ -64,12 +64,12 @@ func TestN(t *testing.T) {
 	s := stream.N().Take(10)
 	for i := 0; i < 10; i++ {
 		if s.Head() != i {
-			t.Fail()
+			t.FailNow()
 		}
 		s = s.Tail()
 	}
 	if s != nil {
-		t.Fail()
+		t.FailNow()
 	}
 }
 
@@ -77,12 +77,12 @@ func TestRange(t *testing.T) {
 	s := stream.Range(-3, 3)
 	for i := -3; i < 3; i++ {
 		if s.Head() != i {
-			t.Fail()
+			t.FailNow()
 		}
 		s = s.Tail()
 	}
 	if s != nil {
-		t.Fail()
+		t.FailNow()
 	}
 
 	s = stream.Range(3, -3)
@@ -93,7 +93,7 @@ func TestRange(t *testing.T) {
 		s = s.Tail()
 	}
 	if s != nil {
-		t.Fail()
+		t.FailNow()
 	}
 }
 
@@ -115,6 +115,6 @@ func TestRand(t *testing.T) {
 		return a.(float64) + x.(float64)
 	}).(float64)
 	if math.Abs(sx+sy+sz-s) > 1e-8 {
-		t.Fail()
+		t.FailNow()
 	}
 }

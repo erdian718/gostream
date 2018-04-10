@@ -153,6 +153,15 @@ func (self *Stream) Any(f func(interface{}) bool) bool {
 	return false
 }
 
+// 个数
+func (self *Stream) Count() int {
+	n := 0
+	for s := self; s != nil; s = s.Tail() {
+		n += 1
+	}
+	return n
+}
+
 func cut(xs, ys *Stream) *Stream {
 	if ys == nil {
 		return nil
