@@ -45,6 +45,14 @@ func TestDrop(t *testing.T) {
 	if x != 10 {
 		t.FailNow()
 	}
+
+	x0 := stream.N()
+	x1 := x0.Drop(10)
+	x2 := x1.Drop(10)
+	x3 := x0.Drop(20)
+	if x3 != x2 {
+		t.FailNow()
+	}
 }
 
 func TestDropWhile(t *testing.T) {
@@ -54,11 +62,40 @@ func TestDropWhile(t *testing.T) {
 	if x != 10 {
 		t.FailNow()
 	}
+
+	x0 := stream.N()
+	x1 := x0.DropWhile(func(x interface{}) bool {
+		return x.(int) < 10
+	})
+	x2 := x1.DropWhile(func(x interface{}) bool {
+		return x.(int) < 20
+	})
+	x3 := x0.DropWhile(func(x interface{}) bool {
+		return x.(int) < 20
+	})
+	if x3 != x2 {
+		t.FailNow()
+	}
 }
 
 func TestCut(t *testing.T) {
 	s := stream.N().Cut(0).Take(10).Cut(5)
 	for i := 0; i < 5; i++ {
+		if s.Head() != i {
+			t.FailNow()
+		}
+		s = s.Tail()
+	}
+	if s != nil {
+		t.FailNow()
+	}
+}
+
+func TestCutWhile(t *testing.T) {
+	s := stream.N().Take(100).CutWhile(func(x interface{}) bool {
+		return x.(int) >= 50
+	})
+	for i := 0; i < 50; i++ {
 		if s.Head() != i {
 			t.FailNow()
 		}

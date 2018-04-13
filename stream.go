@@ -86,6 +86,11 @@ func (self *Stream) Cut(n int) *Stream {
 	return cut(self, self.Drop(n))
 }
 
+// 去掉尾部的元素
+func (self *Stream) CutWhile(f func(interface{}) bool) *Stream {
+	return cutWhile(self, self, f)
+}
+
 // 映射
 func (self *Stream) Map(f func(interface{}) interface{}) *Stream {
 	if self == nil {
@@ -168,5 +173,20 @@ func cut(xs, ys *Stream) *Stream {
 	}
 	return New(xs.Head(), func() *Stream {
 		return cut(xs.Tail(), ys.Tail())
+	})
+}
+
+func cutWhile(xs, ys *Stream, f func(interface{}) bool) *Stream {
+	if xs == ys {
+		ys = ys.DropWhile(f)
+	}
+	if ys == nil {
+		return nil
+	}
+	return New(xs.Head(), func() *Stream {
+		if ys == xs {
+			ys = ys.Tail()
+		}
+		return cutWhile(xs.Tail(), ys, f)
 	})
 }

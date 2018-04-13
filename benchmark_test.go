@@ -30,6 +30,13 @@ func BenchmarkCut(b *testing.B) {
 	stream.N().Take(b.N).Cut(b.N / 2).Force()
 }
 
+func BenchmarkCutWhile(b *testing.B) {
+	k := b.N / 2
+	stream.N().Take(b.N).CutWhile(func(x interface{}) bool {
+		return x.(int) > k
+	}).Force()
+}
+
 func BenchmarkMap(b *testing.B) {
 	stream.N().Map(func(x interface{}) interface{} {
 		return 2 * x.(int)
