@@ -118,3 +118,25 @@ func TestRand(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestNorm(t *testing.T) {
+	xs := stream.Norm()
+	ys := xs.Drop(10)
+	zs := ys.Drop(10)
+
+	s := xs.Take(30).Fold(0.0, func(a interface{}, x interface{}) interface{} {
+		return a.(float64) + x.(float64)
+	}).(float64)
+	sx := xs.Take(10).Fold(0.0, func(a interface{}, x interface{}) interface{} {
+		return a.(float64) + x.(float64)
+	}).(float64)
+	sy := ys.Take(10).Fold(0.0, func(a interface{}, x interface{}) interface{} {
+		return a.(float64) + x.(float64)
+	}).(float64)
+	sz := zs.Take(10).Fold(0.0, func(a interface{}, x interface{}) interface{} {
+		return a.(float64) + x.(float64)
+	}).(float64)
+	if math.Abs(sx+sy+sz-s) > 1e-8 {
+		t.FailNow()
+	}
+}

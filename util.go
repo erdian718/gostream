@@ -56,7 +56,7 @@ func Range(a int, b int) *Stream {
 	}
 }
 
-// 随机
+// 平均分布随机
 func Rand() *Stream {
 	var tail func() *Stream
 	rnd := rand.New(rand.NewSource(time.Now().Unix()))
@@ -64,4 +64,14 @@ func Rand() *Stream {
 		return New(rnd.Float64(), tail)
 	}
 	return New(rnd.Float64(), tail)
+}
+
+// 正太分布随机
+func Norm() *Stream {
+	var tail func() *Stream
+	rnd := rand.New(rand.NewSource(time.Now().Unix()))
+	tail = func() *Stream {
+		return New(rnd.NormFloat64(), tail)
+	}
+	return New(rnd.NormFloat64(), tail)
 }
