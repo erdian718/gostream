@@ -1,10 +1,5 @@
 package stream
 
-import (
-	"math/rand"
-	"time"
-)
-
 // 创建流
 func Make(xs ...interface{}) *Stream {
 	if len(xs) == 0 {
@@ -54,24 +49,4 @@ func Range(a int, b int) *Stream {
 	} else {
 		return Grow(a, -1).Take(a - b)
 	}
-}
-
-// 平均分布随机
-func Rand() *Stream {
-	var tail func() *Stream
-	rnd := rand.New(rand.NewSource(time.Now().Unix()))
-	tail = func() *Stream {
-		return New(rnd.Float64(), tail)
-	}
-	return New(rnd.Float64(), tail)
-}
-
-// 正太分布随机
-func Norm() *Stream {
-	var tail func() *Stream
-	rnd := rand.New(rand.NewSource(time.Now().Unix()))
-	tail = func() *Stream {
-		return New(rnd.NormFloat64(), tail)
-	}
-	return New(rnd.NormFloat64(), tail)
 }
